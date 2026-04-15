@@ -814,3 +814,14 @@ h2 {
   color: inherit;
   cursor: pointer;
 }
+
+.logout-form,
+.inline-form {
+  margin: 0;
+}
+
+.nav-button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}

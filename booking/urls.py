@@ -22,4 +22,5 @@ urlpatterns = [
     path("confirm-reservation/", views.confirm_reservation, name="confirm_reservation"),
     path("reservation-success/", views.reservation_success, name="reservation_success"),
     path("my-reservation/", views.my_reservation, name="my_reservation"),
+    path("cancel-reservation/", views.cancel_reservation, name="cancel_reservation"),
 ]

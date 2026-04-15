@@ -41,10 +41,17 @@
         </div>
       </div>
 
-      <div class="panel-actions">
+      <div class="panel-actions panel-actions--split">
         <a href="{% url 'booking:reservation_success' %}" class="nav-link nav-link--accent">
           Ver pantalla de confirmación
         </a>
+
+        <form method="post" action="{% url 'booking:cancel_reservation' %}" class="inline-form">
+          {% csrf_token %}
+          <button type="submit" class="nav-link nav-link--danger nav-button">
+            Cancelar reserva
+          </button>
+        </form>
       </div>
     {% else %}
       <div class="empty-state empty-state--center">

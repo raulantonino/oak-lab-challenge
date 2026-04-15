@@ -28,11 +28,12 @@
             <span class="nav-user">Entrenador: {{ request.user.username }}</span>
             <a href="{% url 'booking:choose_creature' %}" class="nav-link">Agendar</a>
             <a href="{% url 'booking:my_reservation' %}" class="nav-link">Mi Reserva</a>
+
             <form method="post" action="{% url 'booking:logout' %}" class="logout-form">
-            {% csrf_token %}
-            <button type="submit" class="nav-link nav-link--danger nav-button">
+              {% csrf_token %}
+              <button type="submit" class="nav-link nav-link--danger nav-button">
                 Salir
-            </button>
+              </button>
             </form>
           {% else %}
             <a href="{% url 'booking:login' %}" class="nav-link">Login</a>

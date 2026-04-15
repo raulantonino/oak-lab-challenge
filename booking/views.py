@@ -253,3 +253,28 @@ def my_reservation(request):
         "reservation": reservation,
     }
     return render(request, "booking/my_reservation.html", context)
+
+
+@login_required
+def cancel_reservation(request):
+    if request.method != "POST":
+        messages.error(request, "Acción no permitida.")
+        return redirect("booking:my_reservation")
+
+    reservation = Reservation.objects.filter(trainer=request.user).first()
+
+    if not reservation:
+        messages.error(request, "No tienes una reserva activa para cancelar.")
+        return redirect("booking:my_reservation")
+
+    reservation.delete()
+
+    request.session.pop("selected_creature_id", None)
+    request.session.pop("selected_time_slot_id", None)
+    request.session.modified = True
+
+    messages.success(
+        request,
+        "Tu reserva fue cancelada correctamente. Ya puedes agendar una nueva.",
+    )
+    return redirect("booking:my_reservation")

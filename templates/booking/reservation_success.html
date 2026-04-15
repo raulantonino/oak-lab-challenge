@@ -52,7 +52,13 @@
 
     <div class="panel-actions panel-actions--split">
       <a href="{% url 'booking:my_reservation' %}" class="nav-link nav-link--accent">Mi Reserva</a>
-      <a href="{% url 'booking:logout' %}" class="nav-link nav-link--danger">Salir</a>
+
+      <form method="post" action="{% url 'booking:cancel_reservation' %}" class="inline-form">
+        {% csrf_token %}
+        <button type="submit" class="nav-link nav-link--danger nav-button">
+          Cancelar reserva
+        </button>
+      </form>
     </div>
   </div>
 </section>
