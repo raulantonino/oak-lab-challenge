@@ -3,27 +3,67 @@
 {% block title %}Elegir horario | Oak Lab{% endblock %}
 
 {% block content %}
-<section class="panel-screen">
-  <div class="panel-card">
+<section class="schedule-screen">
+  <div class="screen-heading">
     <p class="eyebrow">Paso 2 de 3</p>
-    <h1>Ahora elige un horario</h1>
+    <h1>Elige tu horario en el laboratorio</h1>
     <p class="auth-text">
-      Ya seleccionaste tu criatura. En el siguiente bloque convertiremos esta pantalla
-      en la selección real de horarios disponibles.
+      Selecciona uno de los bloques disponibles para tu visita con el Profesor Oak.
     </p>
+  </div>
 
-    <div class="selected-creature-preview selected-creature-preview--{{ selected_creature.element_type }}">
-      <div class="selected-creature-preview__emoji">{{ selected_creature.emoji }}</div>
-      <div>
-        <p class="selected-creature-preview__label">Criatura elegida</p>
-        <h2>{{ selected_creature.name }}</h2>
-        <p>{{ selected_creature.get_element_type_display }}</p>
-      </div>
+  <div class="selected-creature-preview selected-creature-preview--{{ selected_creature.element_type }}">
+    <div class="selected-creature-preview__emoji">{{ selected_creature.emoji }}</div>
+    <div>
+      <p class="selected-creature-preview__label">Criatura elegida</p>
+      <h2>{{ selected_creature.name }}</h2>
+      <p>{{ selected_creature.get_element_type_display }}</p>
     </div>
+  </div>
 
-    <div class="panel-actions">
-      <a href="{% url 'booking:choose_creature' %}" class="nav-link">← Cambiar criatura</a>
+  {% if time_slots %}
+    <div class="schedule-grid">
+      {% for time_slot in time_slots %}
+        <article class="schedule-card {% if time_slot.id == selected_time_slot_id %}is-selected{% endif %}">
+          <div class="schedule-card__top">
+            <span class="schedule-day">{{ time_slot.get_weekday_display }}</span>
+            <span class="capacity-pill">
+              {{ time_slot.available_capacity }} cupo{{ time_slot.available_capacity|pluralize:"s" }}
+            </span>
+          </div>
+
+          <div class="schedule-card__body">
+            <h2>{{ time_slot.start_time|time:"H:i" }} - {{ time_slot.end_time|time:"H:i" }}</h2>
+            <p>
+              Bloque semanal disponible para tu cita en el laboratorio.
+            </p>
+          </div>
+
+          <form method="post" class="schedule-card__form">
+            {% csrf_token %}
+            <input type="hidden" name="time_slot_id" value="{{ time_slot.id }}" />
+            <button type="submit" class="btn btn-primary btn-full">
+              {% if time_slot.id == selected_time_slot_id %}
+                ✅ Elegido
+              {% else %}
+                🗓️ Elegir horario
+              {% endif %}
+            </button>
+          </form>
+        </article>
+      {% endfor %}
     </div>
+  {% else %}
+    <div class="empty-state">
+      <h2>No hay horarios disponibles</h2>
+      <p>
+        Todos los bloques están completos o aún no han sido habilitados por el Profesor Oak.
+      </p>
+    </div>
+  {% endif %}
+
+  <div class="panel-actions">
+    <a href="{% url 'booking:choose_creature' %}" class="nav-link">← Cambiar criatura</a>
   </div>
 </section>
 {% endblock %}

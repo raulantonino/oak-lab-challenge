@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar reserva | Oak Lab{% endblock %}
+
+{% block content %}
+<section class="panel-screen">
+  <div class="panel-card">
+    <p class="eyebrow">Paso 3 de 3</p>
+    <h1>Revisa tu selección</h1>
+    <p class="auth-text">
+      Ya elegiste tu criatura y tu horario. En el siguiente bloque convertiremos esta
+      pantalla en la confirmación real que guarda la reserva en la base de datos.
+    </p>
+
+    <div class="confirmation-summary">
+      <div class="confirmation-item confirmation-item--{{ selected_creature.element_type }}">
+        <div class="confirmation-item__emoji">{{ selected_creature.emoji }}</div>
+        <div>
+          <p class="selected-creature-preview__label">Criatura</p>
+          <h2>{{ selected_creature.name }}</h2>
+          <p>{{ selected_creature.get_element_type_display }}</p>
+        </div>
+      </div>
+
+      <div class="confirmation-item">
+        <div class="confirmation-item__emoji">🗓️</div>
+        <div>
+          <p class="selected-creature-preview__label">Horario</p>
+          <h2>{{ selected_time_slot.get_weekday_display }}</h2>
+          <p>{{ selected_time_slot.start_time|time:"H:i" }} - {{ selected_time_slot.end_time|time:"H:i" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-actions panel-actions--split">
+      <a href="{% url 'booking:choose_time_slot' %}" class="nav-link">← Cambiar horario</a>
+      <span class="nav-link nav-link--accent">Siguiente: confirmar de verdad</span>
+    </div>
+  </div>
+</section>
+{% endblock %}
