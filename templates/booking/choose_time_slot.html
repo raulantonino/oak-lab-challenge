@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Elegir horario | Oak Lab{% endblock %}
+
+{% block content %}
+<section class="panel-screen">
+  <div class="panel-card">
+    <p class="eyebrow">Paso 2 de 3</p>
+    <h1>Ahora elige un horario</h1>
+    <p class="auth-text">
+      Ya seleccionaste tu criatura. En el siguiente bloque convertiremos esta pantalla
+      en la selección real de horarios disponibles.
+    </p>
+
+    <div class="selected-creature-preview selected-creature-preview--{{ selected_creature.element_type }}">
+      <div class="selected-creature-preview__emoji">{{ selected_creature.emoji }}</div>
+      <div>
+        <p class="selected-creature-preview__label">Criatura elegida</p>
+        <h2>{{ selected_creature.name }}</h2>
+        <p>{{ selected_creature.get_element_type_display }}</p>
+      </div>
+    </div>
+
+    <div class="panel-actions">
+      <a href="{% url 'booking:choose_creature' %}" class="nav-link">← Cambiar criatura</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

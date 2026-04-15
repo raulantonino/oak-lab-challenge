@@ -3,20 +3,52 @@
 {% block title %}Elegir criatura | Oak Lab{% endblock %}
 
 {% block content %}
-<section class="panel-screen">
-  <div class="panel-card">
+<section class="creature-screen">
+  <div class="screen-heading">
     <p class="eyebrow">Paso 1 de 3</p>
     <h1>Elige tu criatura inicial</h1>
     <p class="auth-text">
-      Tu registro y login ya funcionan. En el siguiente paso convertiremos esta pantalla
-      en la selección real de criatura.
+      El Profesor Oak tiene todo listo. Escoge la criatura que te acompañará y
+      continúa con la reserva de tu horario.
     </p>
-
-    <div class="placeholder-monsters">
-      <div class="monster-chip monster-chip--fire">🔥 Charmander</div>
-      <div class="monster-chip monster-chip--grass">🌿 Bulbasaur</div>
-      <div class="monster-chip monster-chip--water">💧 Squirtle</div>
-    </div>
   </div>
+
+  {% if creatures %}
+    <div class="creature-grid">
+      {% for creature in creatures %}
+        <article class="creature-card creature-card--{{ creature.element_type }} {% if creature.id == selected_creature_id %}is-selected{% endif %}">
+          <div class="creature-card__glow"></div>
+
+          <div class="creature-card__emoji">{{ creature.emoji }}</div>
+
+          <div class="creature-card__body">
+            <span class="creature-badge creature-badge--{{ creature.element_type }}">
+              {{ creature.get_element_type_display }}
+            </span>
+
+            <h2>{{ creature.name }}</h2>
+            <p>{{ creature.description }}</p>
+          </div>
+
+          <form method="post" class="creature-card__form">
+            {% csrf_token %}
+            <input type="hidden" name="creature_id" value="{{ creature.id }}" />
+            <button type="submit" class="btn btn-primary btn-full">
+              {% if creature.id == selected_creature_id %}
+                ✅ Volver a elegir
+              {% else %}
+                ⚡ Elegir criatura
+              {% endif %}
+            </button>
+          </form>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h2>No hay criaturas disponibles</h2>
+      <p>El Profesor Oak aún no ha habilitado criaturas para reservar.</p>
+    </div>
+  {% endif %}
 </section>
 {% endblock %}
