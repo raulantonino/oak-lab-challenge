@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Oak Lab{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a href="{% url 'booking:home' %}" class="brand">
+          <span class="brand-ball">◓</span>
+          <span class="brand-text">Oak Lab</span>
+        </a>
+
+        <nav class="site-nav">
+          {% if request.user.is_authenticated %}
+            <span class="nav-user">Entrenador: {{ request.user.username }}</span>
+            <a href="{% url 'booking:choose_creature' %}" class="nav-link">Agendar</a>
+            <a href="{% url 'booking:logout' %}" class="nav-link nav-link--danger">Salir</a>
+          {% else %}
+            <a href="{% url 'booking:login' %}" class="nav-link">Login</a>
+            <a href="{% url 'booking:signup' %}" class="nav-link nav-link--accent">Registro</a>
+          {% endif %}
+        </nav>
+      </header>
+
+      <main class="site-main">
+        {% if messages %}
+          <div class="messages-wrapper">
+            {% for message in messages %}
+              <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </body>
+</html>

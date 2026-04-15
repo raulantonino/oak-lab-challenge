@@ -63,8 +63,8 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-LOGIN_URL = "login"
+LOGIN_URL = "booking:login"
 LOGIN_REDIRECT_URL = "booking:choose_creature"
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "booking:login"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
