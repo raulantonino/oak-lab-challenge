@@ -162,7 +162,7 @@ def confirm_reservation(request):
                 request,
                 "Ya tienes una reserva registrada. No puedes crear otra.",
             )
-            return redirect("booking:reservation_success")
+            return redirect("booking:my_reservation")
 
         try:
             with transaction.atomic():
@@ -173,7 +173,7 @@ def confirm_reservation(request):
                         request,
                         "Ya tienes una reserva registrada. No puedes crear otra.",
                     )
-                    return redirect("booking:reservation_success")
+                    return redirect("booking:my_reservation")
 
                 locked_time_slot = TimeSlot.objects.select_for_update().get(
                     pk=selected_time_slot_id,
@@ -204,7 +204,7 @@ def confirm_reservation(request):
                 request,
                 "No fue posible crear la reserva porque ya existe una para este usuario.",
             )
-            return redirect("booking:reservation_success")
+            return redirect("booking:my_reservation")
 
         request.session.pop("selected_creature_id", None)
         request.session.pop("selected_time_slot_id", None)
@@ -239,3 +239,17 @@ def reservation_success(request):
         "reservation": reservation,
     }
     return render(request, "booking/reservation_success.html", context)
+
+
+@login_required
+def my_reservation(request):
+    reservation = (
+        Reservation.objects.select_related("creature", "time_slot")
+        .filter(trainer=request.user)
+        .first()
+    )
+
+    context = {
+        "reservation": reservation,
+    }
+    return render(request, "booking/my_reservation.html", context)

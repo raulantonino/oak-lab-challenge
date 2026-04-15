@@ -786,3 +786,31 @@ h2 {
     padding: 1.35rem;
   }
 }
+
+/* Ticket 7 - My reservation */
+
+.reservation-detail {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.empty-state--center {
+  text-align: center;
+}
+
+.empty-state--center .panel-actions {
+  justify-content: center;
+  display: flex;
+  margin-top: 1.25rem;
+}
+
+.logout-form {
+  margin: 0;
+}
+
+.nav-button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
