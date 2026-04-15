@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Reserva confirmada | Oak Lab{% endblock %}
+
+{% block content %}
+<section class="success-screen">
+  <div class="success-card">
+    <div class="celebration-burst" aria-hidden="true">
+      <span class="celebration-dot celebration-dot--1"></span>
+      <span class="celebration-dot celebration-dot--2"></span>
+      <span class="celebration-dot celebration-dot--3"></span>
+      <span class="celebration-dot celebration-dot--4"></span>
+      <span class="celebration-dot celebration-dot--5"></span>
+      <span class="celebration-dot celebration-dot--6"></span>
+    </div>
+
+    <div class="success-badge">✅ Reserva confirmada</div>
+
+    <h1>¡Todo listo, entrenador!</h1>
+    <p class="auth-text success-text">
+      El Profesor Oak te espera en el laboratorio. Tu cita ya quedó registrada.
+    </p>
+
+    <div class="success-summary">
+      <div class="confirmation-item confirmation-item--{{ reservation.creature.element_type }}">
+        <div class="confirmation-item__emoji">{{ reservation.creature.emoji }}</div>
+        <div>
+          <p class="selected-creature-preview__label">Criatura</p>
+          <h2>{{ reservation.creature.name }}</h2>
+          <p>{{ reservation.creature.get_element_type_display }}</p>
+        </div>
+      </div>
+
+      <div class="confirmation-item">
+        <div class="confirmation-item__emoji">🗓️</div>
+        <div>
+          <p class="selected-creature-preview__label">Horario</p>
+          <h2>{{ reservation.time_slot.get_weekday_display }}</h2>
+          <p>{{ reservation.time_slot.start_time|time:"H:i" }} - {{ reservation.time_slot.end_time|time:"H:i" }}</p>
+        </div>
+      </div>
+
+      <div class="confirmation-item">
+        <div class="confirmation-item__emoji">📌</div>
+        <div>
+          <p class="selected-creature-preview__label">Reserva creada</p>
+          <h2>{{ reservation.created_at|date:"d/m/Y" }}</h2>
+          <p>{{ reservation.created_at|time:"H:i" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-actions panel-actions--split">
+      <a href="{% url 'booking:choose_creature' %}" class="nav-link">Ver flujo nuevamente</a>
+      <a href="{% url 'booking:logout' %}" class="nav-link nav-link--danger">Salir</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

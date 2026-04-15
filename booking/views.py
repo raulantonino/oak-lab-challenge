@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError, transaction
 from django.db.models import Case, Count, F, IntegerField, Value, When
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import SignUpForm
-from .models import Creature, TimeSlot
+from .models import Creature, Reservation, TimeSlot
 
 
 def _available_time_slots_queryset():
@@ -155,8 +156,86 @@ def confirm_reservation(request):
         )
         return redirect("booking:choose_time_slot")
 
+    if request.method == "POST":
+        if Reservation.objects.filter(trainer=request.user).exists():
+            messages.error(
+                request,
+                "Ya tienes una reserva registrada. No puedes crear otra.",
+            )
+            return redirect("booking:reservation_success")
+
+        try:
+            with transaction.atomic():
+                if Reservation.objects.select_for_update().filter(
+                    trainer=request.user
+                ).exists():
+                    messages.error(
+                        request,
+                        "Ya tienes una reserva registrada. No puedes crear otra.",
+                    )
+                    return redirect("booking:reservation_success")
+
+                locked_time_slot = TimeSlot.objects.select_for_update().get(
+                    pk=selected_time_slot_id,
+                    is_active=True,
+                )
+
+                reserved_count = Reservation.objects.select_for_update().filter(
+                    time_slot=locked_time_slot
+                ).count()
+
+                if reserved_count >= locked_time_slot.max_capacity:
+                    request.session.pop("selected_time_slot_id", None)
+                    request.session.modified = True
+                    messages.error(
+                        request,
+                        "Ese horario acaba de llenarse. Elige otro disponible.",
+                    )
+                    return redirect("booking:choose_time_slot")
+
+                Reservation.objects.create(
+                    trainer=request.user,
+                    creature=selected_creature,
+                    time_slot=locked_time_slot,
+                )
+
+        except IntegrityError:
+            messages.error(
+                request,
+                "No fue posible crear la reserva porque ya existe una para este usuario.",
+            )
+            return redirect("booking:reservation_success")
+
+        request.session.pop("selected_creature_id", None)
+        request.session.pop("selected_time_slot_id", None)
+        request.session.modified = True
+
+        messages.success(
+            request,
+            "¡Tu reserva fue confirmada con éxito en el laboratorio del Profesor Oak!",
+        )
+        return redirect("booking:reservation_success")
+
     context = {
         "selected_creature": selected_creature,
         "selected_time_slot": selected_time_slot,
     }
     return render(request, "booking/confirm_reservation.html", context)
+
+
+@login_required
+def reservation_success(request):
+    reservation = (
+        Reservation.objects.select_related("creature", "time_slot")
+        .filter(trainer=request.user)
+        .first()
+    )
+
+    if not reservation:
+        messages.error(request, "Aún no tienes una reserva confirmada.")
+        return redirect("booking:choose_creature")
+
+    context = {
+        "reservation": reservation,
+    }
+    return render(request, "booking/reservation_success.html", context)

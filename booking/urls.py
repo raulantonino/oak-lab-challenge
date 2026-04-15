@@ -20,4 +20,5 @@ urlpatterns = [
     path("choose-creature/", views.choose_creature, name="choose_creature"),
     path("choose-time-slot/", views.choose_time_slot, name="choose_time_slot"),
     path("confirm-reservation/", views.confirm_reservation, name="confirm_reservation"),
+    path("reservation-success/", views.reservation_success, name="reservation_success"),
 ]
